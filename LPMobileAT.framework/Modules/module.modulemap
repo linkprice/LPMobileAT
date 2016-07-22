@@ -1,0 +1,6 @@
+framework module LPMobileAT {
+  umbrella header "LPMobileAT.h"
+
+  export *
+  module * { export * }
+}
