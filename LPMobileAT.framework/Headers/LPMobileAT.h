@@ -1,5 +1,5 @@
 //
-//  LinkPrice.h
+//  LPMobileAT.h
 //  LinkPrice
 //
 //  Created by Sungsoo Kim on 6/9/16.
@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-//! Project version number for LinkPrice.
-FOUNDATION_EXPORT double LinkPriceVersionNumber;
+//! Project version number for LPMobileAT.
+FOUNDATION_EXPORT double LPMobileATVersionNumber;
 
-//! Project version string for LinkPrice.
-FOUNDATION_EXPORT const unsigned char LinkPriceVersionString[];
+//! Project version string for LPMobileAT.
+FOUNDATION_EXPORT const unsigned char LPMobileATVersionString[];
 
 // import all the public headers of your framework
 
@@ -23,21 +23,21 @@ typedef NS_ENUM(NSInteger, LPEventType) {
     LPEventCPA      = 3,
 };
 
-//// LinkPrice protocol definition
-//@protocol LinkPriceDelegate
+//// LPMobileAT protocol definition
+//@protocol LPMobileATDelegate
 //
 //+ didReceiveDeferredDeepLink:(NSURL *)url;
 //
 //@end
 
-// LinkPrice class interface
+// LPMobileAT class interface
 @interface LPMobileAT : NSObject
 
 + (NSString *)apiVersion;
 + (NSString *)sdkVersion;
 
 + (void)initializeWithAppId:(NSString *)appId appKey:(NSString *)appKey;
-//+ (void)checkForDeferredDeepLink:(id<LinkPriceDelegate>)delegate;
+//+ (void)checkForDeferredDeepLink:(id<LPMobileATDelegate>)delegate;
 + (void)applicationDidOpenURL:(NSURL *)url;
 + (void)trackAppLaunch;
 + (void)trackEvent:(LPEventType)eventType withValues:(NSDictionary *)values;
