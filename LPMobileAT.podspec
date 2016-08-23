@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
                              LICENSE
                        }
   s.author           = { "LinkPrice" => "app_dev@linkprice.com" }
-  s.source           = { :git => "https://github.com/linkprice/LPMobileAT_iOS/LPMobileAT.git",
+  s.source           = { :git => "https://github.com/linkprice/LPMobileAT_iOS.git",
                          :tag => s.version.to_s
                        }
   s.ios.deployment_target = "6.0"
