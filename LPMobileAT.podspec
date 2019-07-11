@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "LPMobileAT"
-  s.version          = "1.0.0"
+  s.version          = "2.0"
   s.summary          = "LPMobileAT provides tracking functionality for app installation and in-app events."
   s.description      = <<-DESC
                        LinkPrice's LPMobileAT allows you to track app installation (CPI),
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/linkprice/LPMobileAT_iOS.git",
                          :tag => s.version.to_s
                        }
-  s.ios.deployment_target = "6.0"
+  s.ios.deployment_target = "9.0"
   s.ios.frameworks = "AdSupport", "Security"
   s.ios.preserve_paths = "LPMobileAT.framework"
   s.ios.vendored_frameworks = "LPMobileAT.framework"
