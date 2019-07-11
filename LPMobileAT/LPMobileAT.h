@@ -42,4 +42,5 @@ typedef NS_ENUM(NSInteger, LPEventType) {
 + (void)trackAppLaunch;
 + (void)trackEvent:(LPEventType)eventType withValues:(NSDictionary *)values;
 
+
 @end
