@@ -35,13 +35,11 @@ typedef NS_ENUM(NSInteger, LPEventType) {
 
 + (NSString *)apiVersion;
 + (NSString *)sdkVersion;
-+ (NSString *)getLpinfo;
 
 + (void)initializeWithAppId:(NSString *)appId appKey:(NSString *)appKey;
 //+ (void)checkForDeferredDeepLink:(id<LPMobileATDelegate>)delegate;
 + (void)applicationDidOpenURL:(NSURL *)url;
 + (void)trackAppLaunch;
 + (void)trackEvent:(LPEventType)eventType withValues:(NSDictionary *)values;
-+ (void)autoCpi:(NSString *)merchant_id ua:(NSString *)userAgent remoteAddr:(NSString *)remoteAddress;
 
 @end
