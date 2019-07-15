@@ -60,7 +60,7 @@ double LPMobileATVersionNumber = FRAMEWORK_VERSION_NUMBER;
 const unsigned char LPMobileATVersionString[] = FRAMEWORK_VERSION_STRING;
 
 static NSString* urlDecode(NSString *str) {
-    NSString *unescapedString = [str stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *unescapedString = [str stringByRemovingPercentEncoding];
 
     return unescapedString;
 }
@@ -204,6 +204,34 @@ static NSString* urlDecode(NSString *str) {
 
     DLog(@"exited");
 }
+    
+    // This is called from application:didFinishLaunchingWithOptions:
++ (void)initializeWithAppId {
+    
+    DLog(@"entered");
+    
+    _tracker.appEvents[kIsAppLaunched] = @(YES);
+    
+    // check if the app launches for the first time after installed
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultsKey];
+    if (dict == nil) {
+        _tracker.appEvents[kIsFirstLaunch] = @(YES);
+        
+        /*
+         id appVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+         id appBuild = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+         dict = @{kAppVersion: appVersion, kAppBuild: appBuild};
+         */
+        dict = @{kFirstLaunchTime: @((long long)[[NSDate date] timeIntervalSince1970])};
+        DLog(@"UserDefaults set key:%@, value:%@", kUserDefaultsKey, dict);
+        [[NSUserDefaults standardUserDefaults] setObject:dict forKey:kUserDefaultsKey];
+    }
+    else {
+        _tracker.appEvents[kIsFirstLaunch] = @(NO);
+    }
+    
+    DLog(@"exited");
+}
 
 // This is called from the following methods.
 // - application:openURL:options:
@@ -225,7 +253,7 @@ static NSString* urlDecode(NSString *str) {
         _tracker.appEvents[kQueryItems] = [url lpmt_queryItems];
         DLog(@"saved url: %@", url.absoluteString);
         
-        NSLog(@"queryItems: %@", _tracker.appEvents[kQueryItems]);
+//        NSLog(@"queryItems: %@", _tracker.appEvents[kQueryItems]);
         
         NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
         dayComponent.day = [_tracker.appEvents[kQueryItems][@"rd"] integerValue];
@@ -240,7 +268,7 @@ static NSString* urlDecode(NSString *str) {
         [userDefaults setObject:lp forKey:(@"lpinfo")];
         [userDefaults synchronize];
         
-        NSLog(@"lpinfo: %@", [userDefaults dictionaryForKey:@"lpinfo"]);
+ //       NSLog(@"lpinfo: %@", [userDefaults dictionaryForKey:@"lpinfo"]);
         
     }
 
@@ -293,9 +321,8 @@ static NSString* urlDecode(NSString *str) {
                     id<UIApplicationDelegate> applicationDelegate = [[UIApplication sharedApplication] delegate];
                     [applicationDelegate application:application
                                              openURL:url
-                                   sourceApplication:nil
-                                          annotation:@{}];//딕셔너리 구조:혹시 전달할 추가 정보가 있으면 여기에 넣으면 됩니다.
-
+                                          options:@{}];//딕셔너리 구조:혹시 전달할 추가 정보가 있으면 여기에 넣으면 됩니다.
+                    
                     DLog(@"call openURL - end");
                 }
 
@@ -398,7 +425,7 @@ static NSString* urlDecode(NSString *str) {
             // prepare outer section
             NSDictionary *params = data;
             
-            NSLog(@"data: %@", params);
+ //           NSLog(@"data: %@", params);
             
             // call server
             [_tracker sendAsynchronousRequest:params
@@ -444,38 +471,47 @@ static NSString* urlDecode(NSString *str) {
     
     // call server
     DLog(@"call server: %@", LP_API_URL);
-    [NSURLConnection
-     sendAsynchronousRequest:request
-     queue:[NSOperationQueue mainQueue]
-     completionHandler:^(NSURLResponse *response,
-                         NSData *data,
-                         NSError *error) {
-
-         LPMTResponse *lpResponse;
-         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-
-         if (error != nil) {
-             DLog(@"ERROR: %@", error);
-         }
-         else if (httpResponse.statusCode != 200) {
-             DLog(@"ERROR: HTTP Status: %ld", (long)httpResponse.statusCode);
-             DLog(@"ERROR: Response Data: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-         }
-         else if ([data length] == 0) {
-             DLog(@"ERROR: HTTP Status: %ld", (long)httpResponse.statusCode);
-             DLog(@"ERROR: No Response Data");
-         }
-         else {
-             // parse response data
-//             lpResponse = [[LPMTResponse alloc] initWithKey:self.appKey data:data];
-         }
-
-         // run completionHandler
-         if (completionHandler != nil) {
-             DLog(@"run completionHandler");
-             completionHandler(lpResponse);
-         }
-     }];
+//    [NSURLConnection
+//     sendAsynchronousRequest:request
+//     queue:[NSOperationQueue mainQueue]
+//     completionHandler:^(NSURLResponse *response,
+//                         NSData *data,
+//                         NSError *error) {
+    [[[NSURLSession sharedSession]
+      dataTaskWithRequest:request
+      completionHandler:^(NSData * _Nullable data,
+                          NSURLResponse * _Nullable response,
+                          NSError * _Nullable error) {
+          
+          
+          
+          //        NSURLSession dataTaskWithRequest:completionHandler:
+          
+          LPMTResponse *lpResponse;
+          NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+          
+          if (error != nil) {
+              DLog(@"ERROR: %@", error);
+          }
+          else if (httpResponse.statusCode != 200) {
+              DLog(@"ERROR: HTTP Status: %ld", (long)httpResponse.statusCode);
+              DLog(@"ERROR: Response Data: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+          }
+          else if ([data length] == 0) {
+              DLog(@"ERROR: HTTP Status: %ld", (long)httpResponse.statusCode);
+              DLog(@"ERROR: No Response Data");
+          }
+          else {
+              // parse response data
+              //             lpResponse = [[LPMTResponse alloc] initWithKey:self.appKey data:data];
+          }
+          
+          // run completionHandler
+          if (completionHandler != nil) {
+              DLog(@"run completionHandler");
+              completionHandler(lpResponse);
+          }
+      }] resume];
 
     DLog(@"exited");
 }

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "LPMobileAT"
-  s.version          = "2.0"
+  s.version          = "2.0.2"
   s.summary          = "LPMobileAT provides tracking functionality for app installation and in-app events."
   s.description      = <<-DESC
                        LinkPrice's LPMobileAT allows you to track app installation (CPI),

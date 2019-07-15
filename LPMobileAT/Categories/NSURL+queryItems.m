@@ -15,8 +15,8 @@
     NSArray *pairs = [self.query componentsSeparatedByString:@"&"];
     for (NSString *pair in pairs) {
         NSArray *kv = [pair componentsSeparatedByString:@"="];
-        NSString *key = [kv[0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSString *value = [kv[1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *key = [kv[0] stringByRemovingPercentEncoding];
+        NSString *value = [kv[1] stringByRemovingPercentEncoding];
         params[key] = value;
     }
     return params;
