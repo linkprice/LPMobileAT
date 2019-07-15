@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, LPEventType) {
 + (NSString *)getLpinfo;
 
 + (void)initializeWithAppId:(NSString *)appId appKey:(NSString *)appKey;
++ (void)initializeWithAppId;
 //+ (void)checkForDeferredDeepLink:(id<LPMobileATDelegate>)delegate;
 + (void)applicationDidOpenURL:(NSURL *)url;
 + (void)trackAppLaunch;
